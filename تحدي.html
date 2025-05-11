@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تحدي أسئلة الصحة العامة - أبطال أبو عليا للنظافة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f0f4f8;
+      overflow-x: hidden;
+    }
+
+    nav {
+      background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+      padding: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: opacity 0.3s;
+    }
+
+    nav a:hover {
+      opacity: 0.8;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row-reverse;
+      padding: 60px 20px;
+      gap: 40px;
+      animation: fadeIn 2s ease-in-out forwards;
+      opacity: 0;
+    }
+
+    .hero img {
+      width: 220px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .hero h1 {
+      font-size: 2.7rem;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-section {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .question {
+      font-size: 1.5rem;
+      margin: 20px 0;
+    }
+
+    .option {
+      background-color: #007aff;
+      color: white;
+      padding: 12px 20px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .option:hover {
+      background-color: #005bb5;
+    }
+
+    .button {
+      background-color: #28a745;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+
+    .score {
+      font-size: 1.5rem;
+      margin-top: 20px;
+    }
+
+    .result {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">الرئيسية</a>
+    <a href="health.html">الصحة</a>
+    <a href="cleanliness.htm">النظافة</a>
+    <a href="تحدي.html">تحدي الصحة</a>
+    <a href="قمل.HTML">القمل</a>
+    <a href="plAY.HTML">لعبة</a>
+    <a href="others.html">أخرى</a>
+  </nav>
+
+  <section class="hero">
+    <img src="شعار ابو عليا.jpg">
+    <h1>تحدي أسئلة الصحة العامة</h1>
+  </section>
+
+  <div class="quiz-section">
+    <h2>هل أنت جاهز لاختبار معلوماتك الصحية؟</h2>
+    <p>الإجابة على الأسئلة ستساعدك في معرفة مدى اهتمامك بصحتك. دعونا نبدأ!</p>
+
+    <div id="questions-container"></div>
+
+    <button class="button" onclick="showResult()">إظهار النتيجة</button>
+
+    <div class="score" id="score">نقاطك: 0</div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    let score = 0;
+
+    const questionsPool = [
+      // يوم 1 ← كان يوم 3
+      { question: "لماذا يجب غسل اليدين قبل الأكل؟", options: ["للتنظيف", "لقتل الجراثيم", "لأنه عادة", "لترطيبها"], correctAnswer: "لقتل الجراثيم" },
+      { question: "ما عدد أكواب الماء الموصى بها يومياً؟", options: ["8 أكواب", "2 كوب", "12 كوب", "4 أكواب"], correctAnswer: "8 أكواب" },
+      { question: "ما أهمية ممارسة الرياضة؟", options: ["تنشيط الجسم", "زيادة التوتر", "تقليل النوم", "زيادة الوزن"], correctAnswer: "تنشيط الجسم" },
+
+      // يوم 2
+      { question: "كم عدد الوجبات الصحية التي يجب أن يتناولها الشخص يومياً؟", options: ["3 وجبات", "4 وجبات", "2 وجبات", "5 وجبات"], correctAnswer: "3 وجبات" },
+      { question: "ما هو أفضل وقت لممارسة الرياضة؟", options: ["الصباح", "الليل", "بعد الأكل", "قبل النوم"], correctAnswer: "الصباح" },
+      { question: "أي مما يلي يعتبر عادة صحية؟", options: ["تناول الفطور", "تجاهل العشاء", "شرب المشروبات الغازية", "النوم المتأخر"], correctAnswer: "تناول الفطور" },
+
+      // يوم 3 ← كان يوم 1
+      { question: "كم عدد ساعات النوم التي يحتاجها الشخص البالغ يومياً؟", options: ["8 ساعات", "6 ساعات", "4 ساعات", "10 ساعات"], correctAnswer: "8 ساعات" },
+      { question: "هل شرب الماء الكافي مهم لصحة الجسم؟", options: ["نعم", "لا"], correctAnswer: "نعم" },
+      { question: "ما هي فائدة تناول الفواكه بشكل يومي؟", options: ["تعزيز المناعة", "زيادة الوزن", "تقوية العظام", "جميع ما ذكر"], correctAnswer: "تعزيز المناعة" },
+
+      // يوم 4
+      { question: "ما هو أكبر عضو في جسم الإنسان؟", options: ["الجلد", "القلب", "الكبد", "الدماغ"], correctAnswer: "الجلد" },
+      { question: "أي فاكهة تحتوي على فيتامين C؟", options: ["البرتقال", "البطاطا", "الأرز", "الخبز"], correctAnswer: "البرتقال" },
+      { question: "ما هو سبب تسوس الأسنان؟", options: ["عدم تنظيف الأسنان", "أكل الخضار", "كثرة النوم", "شرب الماء"], correctAnswer: "عدم تنظيف الأسنان" },
+
+      // يوم 5
+      { question: "ما هي أفضل طريقة للوقاية من القمل؟", options: ["عدم مشاركة الأدوات الشخصية", "تبديل القبعات", "النوم في المدرسة", "عدم غسل الشعر"], correctAnswer: "عدم مشاركة الأدوات الشخصية" },
+      { question: "كم مرة يجب تنظيف الأسنان بالفرشاة يومياً؟", options: ["مرتين", "مرة", "ثلاث مرات", "كل ساعة"], correctAnswer: "مرتين" },
+      { question: "ما هو العنصر الغذائي الذي يقوي العظام؟", options: ["الكالسيوم", "السكر", "الصوديوم", "الحديد"], correctAnswer: "الكالسيوم" },
+
+      // يوم 6
+      { question: "ما هو تأثير السهر على الصحة؟", options: ["يؤثر سلباً على التركيز", "يجعل الشخص نشيطاً", "يعزز الذاكرة", "لا يؤثر"], correctAnswer: "يؤثر سلباً على التركيز" },
+      { question: "أين تعيش معظم الجراثيم؟", options: ["في اليدين", "في الهواء", "في الضوء", "في الصوت"], correctAnswer: "في اليدين" },
+      { question: "لماذا يجب تغطية الفم عند العطس؟", options: ["لمنع نشر الجراثيم", "لمنع الضوضاء", "لأنها عادة", "لإراحة الأنف"], correctAnswer: "لمنع نشر الجراثيم" }
+    ];
+
+    function loadQuestions() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const dayOfYear = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+      const dayIndex = dayOfYear % 6;
+
+      const startIndex = dayIndex * 3;
+      const selectedQuestions = questionsPool.slice(startIndex, startIndex + 3);
+
+      let container = document.getElementById("questions-container");
+      container.innerHTML = '';
+      selectedQuestions.forEach((q, index) => {
+        let questionDiv = document.createElement("div");
+        questionDiv.classList.add("question");
+        questionDiv.innerHTML = `
+          <p>${index + 1}. ${q.question}</p>
+          ${q.options.map(opt => `
+            <div class="option" onclick="checkAnswer('${q.correctAnswer}', this)">${opt}</div>
+          `).join('')}
+        `;
+        container.appendChild(questionDiv);
+      });
+    }
+
+    function checkAnswer(correctAnswer, option) {
+      if (option.style.pointerEvents === "none") return;
+      const options = option.parentNode.querySelectorAll('.option');
+      options.forEach(opt => opt.style.pointerEvents = "none");
+
+      if (option.innerText === correctAnswer) {
+        score++;
+        option.style.backgroundColor = "#4CAF50";
+      } else {
+        option.style.backgroundColor = "#F44336";
+      }
+
+      document.getElementById('score').innerText = 'نقاطك: ' + score;
+    }
+
+    function showResult() {
+      let resultText = '';
+      if (score === 3) {
+        resultText = '🎉 رائع! لقد أجبت على جميع الأسئلة بشكل صحيح.';
+      } else if (score === 2) {
+        resultText = '👍 جيد، لكن يمكنك تحسين معرفتك أكثر.';
+      } else {
+        resultText = '😕 حاول مرة أخرى! تعلم المزيد عن الصحة العامة.';
+      }
+      document.getElementById('result').innerText = resultText;
+    }
+
+    loadQuestions();
+  </script>
+
+</body>
+</html>
